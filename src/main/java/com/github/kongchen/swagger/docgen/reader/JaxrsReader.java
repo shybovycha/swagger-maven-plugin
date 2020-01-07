@@ -2,6 +2,7 @@ package com.github.kongchen.swagger.docgen.reader;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.google.common.base.CaseFormat;
 import io.swagger.models.properties.StringProperty;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -113,6 +114,9 @@ public class JaxrsReader extends AbstractReader implements ClassSwaggerReader {
         List<SecurityRequirement> securities = getSecurityRequirements(api);
         Map<String, Tag> discoveredTags = scanClasspathForTags();
 
+        final String resourceClassNameTag = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, cls.getSimpleName());
+        tags.put(resourceClassNameTag, new Tag().name(resourceClassNameTag));
+
         // merge consumes, produces
 
         readCommonParameters(cls);
@@ -202,7 +206,7 @@ public class JaxrsReader extends AbstractReader implements ClassSwaggerReader {
     /**
      * Returns true when the swagger object already contains a common parameter
      * with the same name and type as the passed parameter.
-     * 
+     *
      * @param parameter The parameter to check.
      * @return true if the swagger object already contains a common parameter with the same name and type
      */
